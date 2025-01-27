@@ -156,6 +156,8 @@ class Speech:
         :raises ValueError: If any prosody attribute is invalid
         """
         # Validate rate
+        print("CONFIG RATE", config.rate)
+        print("match", re.match(r"^[+-]?\d+%$", config.rate))
         if isinstance(config.rate, ProsodyRate):
             rate = config.rate.value
         elif re.match(r"^[+-]?\d+%$", config.rate):
@@ -199,8 +201,8 @@ class Speech:
             attrs["time"] = time
         if strength:
             attrs["strength"] = strength.value
-
-        self._elements.append(f"<break {' '.join(f'{k}="{v}"' for k, v in attrs.items())}/>")
+        to_append = ' '.join(f'{k}="{v}"' for k, v in attrs.items())
+        self._elements.append(f"<break {to_append}/>")
         return self
 
     def voice(self, name: Optional[str] = None, language: Optional[str] = None,

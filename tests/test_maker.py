@@ -1,5 +1,5 @@
 import pytest
-from ssml_builder import Speech, InterpretAs, ProsodyConfig, ProsodyRate, ProsodyPitch, VolumeLevel, EmphasisLevel, \
+from ssml_maker import Speech, InterpretAs, ProsodyConfig, ProsodyRate, ProsodyPitch, VolumeLevel, EmphasisLevel, \
     BreakStrength, PhoneticAlphabet
 
 
@@ -126,13 +126,13 @@ def test_complex_nesting():
     with Speech() as speech:
         with speech.voice(language="en-US", gender="female"):
             speech.add_text("Main content")
-            with speech.prosody(ProsodyConfig(rate="slow")):
+            with speech.prosody(ProsodyConfig(rate=ProsodyRate.SLOW)):
                 speech.add_text("Slow speech")
                 speech.add_break(time="500ms")
             with speech.emphasis(EmphasisLevel.MODERATE):
                 speech.add_text("Important point")
     assert "<voice" in speech.build()
-    assert "<prosody rate=\"slow\">" in speech.build()
+    assert "<prosody rate=\"slow\"" in speech.build()
     assert "<break time=\"500ms\"/>" in speech.build()
     assert "<emphasis level=\"moderate\">" in speech.build()
 
@@ -142,16 +142,17 @@ def test_error_handling():
     with pytest.raises(ValueError):
         with Speech() as speech:
             with speech.voice():  # No parameters
-
+                pass
     # Test invalid say-as format
     with pytest.raises(ValueError):
         config = ProsodyConfig(rate="invalid_rate")
         with Speech() as speech:
-            with speech.prosody(config)
+            with speech.prosody(config):
+                pass
 
 
 def test_full_integration():
-    expected = """<speak><voice name="Joanna"><prosody rate="fast" pitch="high" volume="loud">Hello <break time="500ms"/><say-as interpret-as="characters">WWW</say-as></prosody></voice></speak>"""
+    expected = """<speak><voice name="Joanna"><prosody rate="fast" pitch="high" volume="loud">Hello<break time="500ms"/><say-as interpret-as="characters">WWW</say-as></prosody></voice></speak>"""
 
     with Speech() as speech:
         with speech.voice(name="Joanna"):

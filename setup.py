@@ -12,7 +12,8 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/yourusername/ssml-maker",
-    packages=find_packages(),
+    packages=["ssml_maker"],
+    package_dir={"ssml_maker": "python"},
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
