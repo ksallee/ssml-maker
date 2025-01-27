@@ -156,8 +156,6 @@ class Speech:
         :raises ValueError: If any prosody attribute is invalid
         """
         # Validate rate
-        print("CONFIG RATE", config.rate)
-        print("match", re.match(r"^[+-]?\d+%$", config.rate))
         if isinstance(config.rate, ProsodyRate):
             rate = config.rate.value
         elif re.match(r"^[+-]?\d+%$", config.rate):
@@ -325,24 +323,3 @@ class Speech:
         :return: Self instance for method chaining
         """
         return self._add_tag("google:style", {"name": name})
-
-
-# Example usage
-if __name__ == "__main__":
-    speech = Speech()
-    with speech:
-        speech.add_text("Here are ")
-        with speech.say_as(InterpretAs.CHARACTERS):
-            speech.add_text("SSML")
-        speech.add_text(" samples. I can pause ")
-        speech.add_break(time="3s")
-        speech.add_text(". I can play a sound")
-        with speech.audio(src="https://example.com/sound.mp3"):
-            speech.add_text("fallback text")
-        with speech.paragraph():
-            with speech.sentence():
-                speech.add_text("This is sentence one.")
-            with speech.sentence():
-                speech.add_text("This is sentence two.")
-
-    print(speech.build())
